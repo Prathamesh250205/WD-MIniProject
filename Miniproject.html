@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IPL Score Predictor</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background: #ffffff10;
+      backdrop-filter: blur(10px);
+      border: 1px solid #ffffff20;
+      border-radius: 15px;
+      padding: 30px 40px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 400px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #00d8ff;
+      margin-bottom: 25px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: 500;
+    }
+
+    select, input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    button {
+      margin-top: 25px;
+      width: 100%;
+      background: #00d8ff;
+      color: #000;
+      font-weight: bold;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: 0.3s ease;
+    }
+
+    button:hover {
+      background: #00a6c7;
+    }
+
+    #result {
+      margin-top: 25px;
+      text-align: center;
+      font-size: 18px;
+      color: #00ffae;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1>IPL Score Predictor</h1>
+
+    <label for="team">Select Team</label>
+    <select id="team">
+      <option>Chennai Super Kings</option>
+      <option>Mumbai Indians</option>
+      <option>Royal Challengers Bangalore</option>
+      <option>Kolkata Knight Riders</option>
+      <option>Delhi Capitals</option>
+      <option>Punjab Kings</option>
+      <option>Rajasthan Royals</option>
+      <option>Sunrisers Hyderabad</option>
+    </select>
+
+    <label for="overs">Overs Completed</label>
+    <input type="number" id="overs" placeholder="e.g., 10" min="1" max="20">
+
+    <label for="runs">Current Score</label>
+    <input type="number" id="runs" placeholder="e.g., 85">
+
+    <label for="wickets">Wickets Lost</label>
+    <input type="number" id="wickets" placeholder="e.g., 3" min="0" max="10">
+
+    <button onclick="predict()">Predict Final Score</button>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    function predict() {
+      const overs = parseFloat(document.getElementById("overs").value);
+      const runs = parseInt(document.getElementById("runs").value);
+      const wickets = parseInt(document.getElementById("wickets").value);
+
+      if (isNaN(overs) || isNaN(runs) || isNaN(wickets) || overs <= 0 || overs > 20 || wickets < 0 || wickets > 10) {
+        document.getElementById("result").innerHTML = "⚠️ Please enter valid input values.";
+        return;
+      }
+
+      if (overs === 20) {
+        document.getElementById("result").innerHTML = "Innings Complete! 🏁";
+        return;
+      }
+
+      const runRate = runs / overs;
+      let predicted = Math.round(runRate * 20);
+
+      // Basic penalty for wickets (simple logic)
+      if (wickets >= 5 && wickets < 8) predicted -= 10;
+      else if (wickets >= 8) predicted -= 20;
+
+      if (predicted < runs) predicted = runs + 5; // safety to avoid lower prediction
+
+      document.getElementById("result").innerHTML = `
+        📊 Predicted Final Score: <strong>${predicted} runs</strong>
+      `;
+    }
+  </script>
+
+</body>
+</html>
